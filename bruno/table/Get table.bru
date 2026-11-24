@@ -1,0 +1,16 @@
+meta {
+  name: Get table
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/api/epl/table
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.length: eq 20
+}
