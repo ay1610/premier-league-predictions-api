@@ -1,0 +1,15 @@
+meta {
+  name: Bottom abc (400)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{host}}/api/epl/table/bottom/abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}
