@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EplApi/EplApi.csproj" />
+  </Folder>
+</Solution>

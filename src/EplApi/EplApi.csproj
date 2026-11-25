@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
     <UserSecretsId>df427ee0-93b1-4d76-a650-ba928c550161</UserSecretsId>
   </PropertyGroup>
 
@@ -11,12 +13,6 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.3.1" />
-  </ItemGroup>
-
-  <!-- Bruno API requests: keep them in the repo, out of the published app. -->
-  <ItemGroup>
-    <Content Remove="bruno/**" />
-    <None Remove="bruno/**" />
   </ItemGroup>
 
 </Project>
