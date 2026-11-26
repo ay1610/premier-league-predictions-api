@@ -3,21 +3,32 @@ using EplApi.Endpoints;
 using EplApi.Middleware;
 using EplApi.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var token = builder.Configuration["FootballData:Token"];
-if (string.IsNullOrWhiteSpace(token))
-    throw new InvalidOperationException("Set the FootballData:Token user secret first.");
-
-builder.Services.AddHttpClient("football-data", client =>
-{
-    client.BaseAddress = new Uri("https://api.football-data.org/v4/");
-    client.DefaultRequestHeaders.Add("X-Auth-Token", token);
-});
 builder.Services.AddDbContext<EplDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Epl"))
 );
+
+builder
+    .Services.AddOptions<CacheOptions>()
+    .BindConfiguration(CacheOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder
+    .Services.AddOptions<FootballDataOptions>()
+    .BindConfiguration(FootballDataOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddHttpClient("football-data", (services, client) =>
+{
+    var footballData = services.GetRequiredService<IOptions<FootballDataOptions>>().Value;
+    client.BaseAddress = new Uri(footballData.BaseUrl);
+    client.DefaultRequestHeaders.Add("X-Auth-Token", footballData.Token);
+});
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();

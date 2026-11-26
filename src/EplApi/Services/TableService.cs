@@ -1,24 +1,27 @@
 using EplApi.Contracts;
 using EplApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 
 namespace EplApi.Services;
 
 public sealed class TableService(
     EplDbContext db,
     IHttpClientFactory factory,
-    ILogger<TableService> logger
+    ILogger<TableService> logger,
+    IOptions<CacheOptions> options
 ) : ITableService
 {
-    static readonly TimeSpan MaxAge = TimeSpan.FromMinutes(10);
-
     public async Task<IReadOnlyList<TableRowResponse>> GetTableAsync(
         CancellationToken cancellationToken
     )
     {
         var rows = await db.StandingRows.OrderBy(r => r.Position).ToListAsync(cancellationToken);
 
-        var isOld = rows.Count == 0 || DateTime.UtcNow - rows[0].UpdatedAtUtc > MaxAge;
+        var maxAge = options.Value.TableMaxAge;
+
+        var isOld = rows.Count == 0 || DateTime.UtcNow - rows[0].UpdatedAtUtc > maxAge;
         if (isOld)
         {
             try

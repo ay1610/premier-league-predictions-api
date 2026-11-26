@@ -17,6 +17,6 @@ public sealed class StandingRow
     public int Played { get; set; }
     public int Points { get; set; }
     public int GoalDifference { get; set; }
-    public string? Form { get; set; } = "";
+    public string? Form { get; set; }
     public DateTime UpdatedAtUtc { get; set; }
 }
